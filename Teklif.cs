@@ -19,9 +19,9 @@ namespace OOP_2._Dönem_Proje_Ödevi
 {
     public class Teklif
     {
-        public string TeklifNo { get; set; }
-        public string FirmaAdi { get; set; }
-        public string ProjeAdi { get; set; }
+        public string? TeklifNo { get; set; }
+        public string? FirmaAdi { get; set; }
+        public string? ProjeAdi { get; set; }
 
         // Teklifin içinde birden fazla malzeme olacağı için bunu bir "Liste" olarak tanımlıyoruz.
         // Bu malzemeler malzeme dosyasındaki malzemelerden olmak zorunda.

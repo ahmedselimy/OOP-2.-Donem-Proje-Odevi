@@ -17,12 +17,12 @@ namespace OOP_2._Dönem_Proje_Ödevi
 {
     public class Malzeme
     {
-        public string MalzemeAdi { get; set; }
-        public string MalzemeCinsi { get; set; }
-        public string Birimi { get; set; }
+        public string? MalzemeAdi { get; set; }
+        public string? MalzemeCinsi { get; set; }
+        public string? Birimi { get; set; }
         public double Fiyati { get; set; }
         public int StokAdedi { get; set; }
-        public string TeminEdilenFirma { get; set; }
+        public string? TeminEdilenFirma { get; set; }
         public int KullanilanAdet { get; set; }
     }
 }

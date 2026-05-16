@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             tabControl1 = new TabControl();
             MalzemeTab = new TabPage();
             MalzemeTemizleButon = new Button();
@@ -50,6 +51,9 @@
             txtMalzemeCins = new Label();
             txtMalzemeAd = new Label();
             TeklifTab = new TabPage();
+            btnTekliftenMalzemeSil = new Button();
+            btnTeklifAra = new Button();
+            txtTeklifAra = new TextBox();
             txtProjeAdi = new TextBox();
             dgvTeklifler = new DataGridView();
             btnRaporla = new Button();
@@ -68,8 +72,6 @@
             label4 = new Label();
             label5 = new Label();
             label6 = new Label();
-            txtAra = new TextBox();
-            btnAra = new Button();
             tabControl1.SuspendLayout();
             MalzemeTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvMalzemeler).BeginInit();
@@ -131,17 +133,21 @@
             // 
             // dgvMalzemeler
             // 
+            dgvMalzemeler.AllowUserToAddRows = false;
+            dgvMalzemeler.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvMalzemeler.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvMalzemeler.Dock = DockStyle.Bottom;
             dgvMalzemeler.Location = new Point(3, 269);
             dgvMalzemeler.Name = "dgvMalzemeler";
+            dgvMalzemeler.ReadOnly = true;
             dgvMalzemeler.RowHeadersWidth = 51;
+            dgvMalzemeler.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvMalzemeler.Size = new Size(786, 145);
             dgvMalzemeler.TabIndex = 17;
             dgvMalzemeler.CellClick += dgvMalzemeler_CellClick;
             // 
             // txtMalzemeAra
             // 
+            txtMalzemeAra.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txtMalzemeAra.Location = new Point(622, 7);
             txtMalzemeAra.Name = "txtMalzemeAra";
             txtMalzemeAra.Size = new Size(125, 27);
@@ -149,6 +155,7 @@
             // 
             // MalzemeAraButon
             // 
+            MalzemeAraButon.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             MalzemeAraButon.Location = new Point(744, 6);
             MalzemeAraButon.Name = "MalzemeAraButon";
             MalzemeAraButon.Size = new Size(40, 29);
@@ -285,8 +292,9 @@
             // 
             // TeklifTab
             // 
-            TeklifTab.Controls.Add(btnAra);
-            TeklifTab.Controls.Add(txtAra);
+            TeklifTab.Controls.Add(btnTekliftenMalzemeSil);
+            TeklifTab.Controls.Add(btnTeklifAra);
+            TeklifTab.Controls.Add(txtTeklifAra);
             TeklifTab.Controls.Add(txtProjeAdi);
             TeklifTab.Controls.Add(dgvTeklifler);
             TeklifTab.Controls.Add(btnRaporla);
@@ -313,6 +321,35 @@
             TeklifTab.Text = "Teklif İşl.";
             TeklifTab.UseVisualStyleBackColor = true;
             // 
+            // btnTekliftenMalzemeSil
+            // 
+            btnTekliftenMalzemeSil.Location = new Point(133, 192);
+            btnTekliftenMalzemeSil.Name = "btnTekliftenMalzemeSil";
+            btnTekliftenMalzemeSil.Size = new Size(87, 49);
+            btnTekliftenMalzemeSil.TabIndex = 35;
+            btnTekliftenMalzemeSil.Text = "Malzeme Sil";
+            btnTekliftenMalzemeSil.UseVisualStyleBackColor = true;
+            btnTekliftenMalzemeSil.Click += btnTekliftenMalzemeSil_Click;
+            // 
+            // btnTeklifAra
+            // 
+            btnTeklifAra.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnTeklifAra.Location = new Point(741, 65);
+            btnTeklifAra.Name = "btnTeklifAra";
+            btnTeklifAra.Size = new Size(42, 29);
+            btnTeklifAra.TabIndex = 34;
+            btnTeklifAra.Text = "Ara";
+            btnTeklifAra.UseVisualStyleBackColor = true;
+            btnTeklifAra.Click += btnTeklifAra_Click;
+            // 
+            // txtTeklifAra
+            // 
+            txtTeklifAra.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtTeklifAra.Location = new Point(619, 65);
+            txtTeklifAra.Name = "txtTeklifAra";
+            txtTeklifAra.Size = new Size(125, 27);
+            txtTeklifAra.TabIndex = 33;
+            // 
             // txtProjeAdi
             // 
             txtProjeAdi.Location = new Point(117, 69);
@@ -322,52 +359,65 @@
             // 
             // dgvTeklifler
             // 
+            dgvTeklifler.AllowUserToAddRows = false;
+            dgvTeklifler.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             dgvTeklifler.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTeklifler.Location = new Point(317, 69);
+            dgvTeklifler.Location = new Point(317, 102);
             dgvTeklifler.Name = "dgvTeklifler";
+            dgvTeklifler.ReadOnly = true;
             dgvTeklifler.RowHeadersWidth = 51;
+            dgvTeklifler.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvTeklifler.Size = new Size(469, 292);
             dgvTeklifler.TabIndex = 32;
             dgvTeklifler.CellClick += dgvTeklifler_CellClick;
             // 
             // btnRaporla
             // 
+            btnRaporla.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnRaporla.Location = new Point(690, 6);
             btnRaporla.Name = "btnRaporla";
             btnRaporla.Size = new Size(94, 53);
             btnRaporla.TabIndex = 31;
             btnRaporla.Text = "Raporla";
             btnRaporla.UseVisualStyleBackColor = true;
+            btnRaporla.Click += btnRaporla_Click;
             // 
             // btnFiyatHesapla
             // 
+            btnFiyatHesapla.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnFiyatHesapla.Location = new Point(590, 6);
             btnFiyatHesapla.Name = "btnFiyatHesapla";
             btnFiyatHesapla.Size = new Size(94, 53);
             btnFiyatHesapla.TabIndex = 30;
             btnFiyatHesapla.Text = "Fiyat Hesapla";
             btnFiyatHesapla.UseVisualStyleBackColor = true;
+            btnFiyatHesapla.Click += btnFiyatHesapla_Click;
             // 
             // btnTeklifGuncelle
             // 
+            btnTeklifGuncelle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnTeklifGuncelle.Location = new Point(490, 6);
             btnTeklifGuncelle.Name = "btnTeklifGuncelle";
             btnTeklifGuncelle.Size = new Size(94, 53);
             btnTeklifGuncelle.TabIndex = 29;
             btnTeklifGuncelle.Text = "Teklif Güncelle";
             btnTeklifGuncelle.UseVisualStyleBackColor = true;
+            btnTeklifGuncelle.Click += btnTeklifGuncelle_Click;
             // 
             // btnTeklifSil
             // 
+            btnTeklifSil.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnTeklifSil.Location = new Point(403, 6);
             btnTeklifSil.Name = "btnTeklifSil";
             btnTeklifSil.Size = new Size(81, 53);
             btnTeklifSil.TabIndex = 28;
             btnTeklifSil.Text = "Teklif Sil";
             btnTeklifSil.UseVisualStyleBackColor = true;
+            btnTeklifSil.Click += btnTeklifSil_Click;
             // 
             // btnTeklifEkle
             // 
+            btnTeklifEkle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnTeklifEkle.Location = new Point(317, 6);
             btnTeklifEkle.Name = "btnTeklifEkle";
             btnTeklifEkle.Size = new Size(80, 53);
@@ -378,10 +428,14 @@
             // 
             // dgvTekliftekiMalzemeler
             // 
+            dgvTekliftekiMalzemeler.AllowUserToAddRows = false;
+            dgvTekliftekiMalzemeler.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvTekliftekiMalzemeler.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTekliftekiMalzemeler.Location = new Point(41, 247);
             dgvTekliftekiMalzemeler.Name = "dgvTekliftekiMalzemeler";
+            dgvTekliftekiMalzemeler.ReadOnly = true;
             dgvTekliftekiMalzemeler.RowHeadersWidth = 51;
+            dgvTekliftekiMalzemeler.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvTekliftekiMalzemeler.Size = new Size(270, 147);
             dgvTekliftekiMalzemeler.TabIndex = 26;
             // 
@@ -469,30 +523,16 @@
             label6.TabIndex = 12;
             label6.Text = "Teklif No:";
             // 
-            // txtAra
-            // 
-            txtAra.Location = new Point(620, 366);
-            txtAra.Name = "txtAra";
-            txtAra.Size = new Size(125, 27);
-            txtAra.TabIndex = 33;
-            // 
-            // btnAra
-            // 
-            btnAra.Location = new Point(742, 366);
-            btnAra.Name = "btnAra";
-            btnAra.Size = new Size(42, 29);
-            btnAra.TabIndex = 34;
-            btnAra.Text = "Ara";
-            btnAra.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(tabControl1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "Form1";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             tabControl1.ResumeLayout(false);
             MalzemeTab.ResumeLayout(false);
@@ -529,13 +569,8 @@
         private TextBox txtMalzemeAra;
         private Button MalzemeAraButon;
         private Button MalzemeTemizleButon;
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private TextBox textBox3;
-        private TextBox textBox4;
         private TextBox txtFirmaAdi;
         private TextBox txtTeklifNo;
-        private Label label3;
         private Label label4;
         private Label label5;
         private Label label6;
@@ -552,7 +587,8 @@
         private Button btnTeklifSil;
         private Button btnTeklifEkle;
         private TextBox txtProjeAdi;
-        private Button btnAra;
-        private TextBox txtAra;
+        private Button btnTeklifAra;
+        private TextBox txtTeklifAra;
+        private Button btnTekliftenMalzemeSil;
     }
 }
