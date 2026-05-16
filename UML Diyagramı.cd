@@ -1,2 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OOP_2._Dönem_Proje_Ödevi.Malzeme">
+    <Position X="3" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAQAYAAAAAAAAAABAAAAAQAQAAAAAAAAAAA=</HashCode>
+      <FileName>Malzeme.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOP_2._Dönem_Proje_Ödevi.Teklif">
+    <Position X="6.5" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAABABAACAAAAAAA=</HashCode>
+      <FileName>Teklif.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="KullanilanMalzemeler" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
