@@ -228,46 +228,92 @@ namespace OOP_2._Dönem_Proje_Ödevi
         }
         private void MalzemeEkleButon_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtMalzemeAdi.Text) || string.IsNullOrWhiteSpace(txtMalzemeFiyati.Text))
+            // 1. KAPSAMLI BOŞLUK KONTROLÜ
+            if (string.IsNullOrWhiteSpace(txtMalzemeAdi.Text) ||
+                string.IsNullOrWhiteSpace(txtMalzemeCinsi.Text) ||
+                string.IsNullOrWhiteSpace(txtMalzemeBirimi.Text) ||
+                string.IsNullOrWhiteSpace(txtMalzemeFiyati.Text) ||
+                string.IsNullOrWhiteSpace(txtMalzemeStogu.Text) ||
+                string.IsNullOrWhiteSpace(txtMalzemeFirmasi.Text))
             {
-                MessageBox.Show("Lütfen Malzeme Adı ve Fiyatı alanlarını doldurun!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lütfen tüm malzeme bilgilerini eksiksiz doldurunuz! Hiçbir alan boş bırakılamaz.", "Eksik Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Hata çıkarma potansiyeli olan sayısal çeviri işlemleri try-catch bloğuna alınıyor
             try
             {
+                // Kutulardaki metinleri alıp tehlikeli karakterleri temizliyoruz
+                string girilenAd = txtMalzemeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "").Trim();
+                string girilenCins = txtMalzemeCinsi.Text.Replace("|", "").Replace("=", "").Replace("~", "").Trim();
+
+                // 2. ÇİFT KAYIT (DUPLICATE) KONTROLÜ
+                Malzeme? varOlanMalzeme = null;
+
+                // Sistemdeki mevcut malzemeleri tarıyoruz
+                foreach (Malzeme m in malzemeListesi)
+                {
+                    // Eğer Adı ve Cinsi birebir aynı olan bir malzeme bulursak onu 'varOlanMalzeme' değişkenine alıyoruz
+                    if (m.MalzemeAdi!.Equals(girilenAd, StringComparison.OrdinalIgnoreCase) &&
+                        m.MalzemeCinsi!.Equals(girilenCins, StringComparison.OrdinalIgnoreCase))
+                    {
+                        varOlanMalzeme = m;
+                        break; // Bulduğumuz an döngüyü durdur
+                    }
+                }
+
+                // Eğer sistemde aynı isimde bir malzeme BULUNDUYSA
+                if (varOlanMalzeme != null)
+                {
+                    DialogResult cevap = MessageBox.Show($"'{girilenAd} - {girilenCins}' isimli malzeme sistemde zaten kayıtlı!\n\nMevcut malzemenin bilgileri (Fiyat, Stok vb.) girdiğiniz bu yeni verilerle üstüne yazılsın mı?",
+                                                         "Çift Kayıt Uyarısı",
+                                                         MessageBoxButtons.YesNo,
+                                                         MessageBoxIcon.Question);
+
+                    if (cevap == DialogResult.Yes)
+                    {
+                        // Kullanıcı Evet derse, yeni kayıt açmak yerine eskisini güncelliyoruz
+                        varOlanMalzeme.Birimi = txtMalzemeBirimi.Text;
+                        string duzeltilmisFiyatGuncel = txtMalzemeFiyati.Text.Replace(",", ".");
+                        varOlanMalzeme.Fiyati = Convert.ToDouble(duzeltilmisFiyatGuncel, System.Globalization.CultureInfo.InvariantCulture);
+                        varOlanMalzeme.StokAdedi = Convert.ToInt32(txtMalzemeStogu.Text);
+                        varOlanMalzeme.TeminEdilenFirma = txtMalzemeFirmasi.Text;
+
+                        MalzemeleriDosyayaYaz();
+                        MalzemeleriListele();
+                        MetinKutulariniTemizle();
+                        ComboboxaMalzemeleriDoldur();
+
+                        MessageBox.Show("Mevcut malzemenin bilgileri başarıyla güncellendi!", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    // İster Evet ister Hayır desin, yeni bir kayıt açılmasını engellemek için metottan çıkıyoruz
+                    return;
+                }
+
+                // 3. EĞER MALZEME SİSTEMDE YOKSA (YENİ KAYIT İŞLEMİ)
                 Malzeme yeniMalzeme = new()
                 {
-                    MalzemeAdi = txtMalzemeAdi.Text,
-                    MalzemeCinsi = txtMalzemeCinsi.Text
+                    MalzemeAdi = girilenAd,
+                    MalzemeCinsi = girilenCins,
+                    Birimi = txtMalzemeBirimi.Text
                 };
-                // TextBox'tan gelen metnin içindeki tehlikeli karakterler anında silinir
-                yeniMalzeme.MalzemeAdi = txtMalzemeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
-                yeniMalzeme.MalzemeCinsi = txtMalzemeCinsi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
-                yeniMalzeme.Birimi = txtMalzemeBirimi.Text;
 
-                // Eğer kullanıcı buraya harf girerse, program çökmek yerine anında 'catch' bloğuna atlayacak
-                // Kullanıcı virgül de girse, nokta da girse hepsini evrensel standart olan noktaya çeviriyoruz
                 string duzeltilmisFiyat = txtMalzemeFiyati.Text.Replace(",", ".");
-
-                // System.Globalization.CultureInfo.InvariantCulture kodu ile bilgisayarın dili ne olursa olsun küsuratın doğru hesaplanmasını garantiliyoruz
                 yeniMalzeme.Fiyati = Convert.ToDouble(duzeltilmisFiyat, System.Globalization.CultureInfo.InvariantCulture);
                 yeniMalzeme.StokAdedi = Convert.ToInt32(txtMalzemeStogu.Text);
-
                 yeniMalzeme.TeminEdilenFirma = txtMalzemeFirmasi.Text;
 
                 malzemeListesi.Add(yeniMalzeme);
+
                 MalzemeleriDosyayaYaz();
                 MalzemeleriListele();
                 MetinKutulariniTemizle();
                 ComboboxaMalzemeleriDoldur();
 
-                MessageBox.Show("Malzeme başarıyla eklendi!", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Yeni malzeme başarıyla eklendi!", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception)
             {
-                // try içindeki kodlarda bir çevirme hatası olursa program buraya düşer
                 MessageBox.Show("Lütfen Fiyat ve Stok Adedi alanlarına sadece sayısal değerler (Örn: 10,5 veya 100) giriniz!", "Sayısal Veri Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -323,9 +369,18 @@ namespace OOP_2._Dönem_Proje_Ödevi
         {
             if (dgvMalzemeler.CurrentRow != null)
             {
-                if (string.IsNullOrWhiteSpace(txtMalzemeAdi.Text) || string.IsNullOrWhiteSpace(txtMalzemeFiyati.Text))
+                // Tüm veri giriş kutularının dolu olup olmadığı tek bir if bloğunda kontrol ediliyor
+                if (string.IsNullOrWhiteSpace(txtMalzemeAdi.Text) ||
+                    string.IsNullOrWhiteSpace(txtMalzemeCinsi.Text) ||
+                    string.IsNullOrWhiteSpace(txtMalzemeBirimi.Text) ||
+                    string.IsNullOrWhiteSpace(txtMalzemeFiyati.Text) ||
+                    string.IsNullOrWhiteSpace(txtMalzemeStogu.Text) ||
+                    string.IsNullOrWhiteSpace(txtMalzemeFirmasi.Text))
                 {
-                    MessageBox.Show("Lütfen Malzeme Adı ve Fiyatı alanlarını boş bırakmayın!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Eğer içlerinden bir tanesi bile boşsa (veya sadece boşluk karakteri girilmişse) uyarı ver
+                    MessageBox.Show("Lütfen tüm malzeme bilgilerini eksiksiz doldurunuz! Hiçbir alan boş bırakılamaz.", "Eksik Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    // Metodu burada durdur, aşağı inip kaydetmesine veya çevirme yapmasına izin verme
                     return;
                 }
 
