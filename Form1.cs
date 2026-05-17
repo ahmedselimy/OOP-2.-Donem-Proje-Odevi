@@ -3,7 +3,7 @@
 **				BİLGİSAYAR VE BİLİŞİM BİLİMLERİ FAKÜLTESİ
 **				    BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
 **				   NESNEYE DAYALI PROGRAMLAMA DERSİ
-**					2014-2015 BAHAR DÖNEMİ
+**					2026-2027 BAHAR DÖNEMİ
 **
 **				ÖDEV NUMARASI..........: Proje Ödevi
 **				ÖĞRENCİ ADI............: Ahmed Selim Yılmaz
@@ -11,29 +11,24 @@
 **              DERSİN ALINDIĞI GRUP...: B Grubu
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.IO;
-
 namespace OOP_2._Dönem_Proje_Ödevi
 {
     public partial class Form1 : Form
     {
         // Eklenecek tüm malzemeleri hafızada tutacak listemiz
-        List<Malzeme> malzemeListesi = new List<Malzeme>();
+        readonly List<Malzeme> malzemeListesi = [];
 
         // Sadece o an ekranda hazırlanan teklifin malzemelerini tutacak geçici liste
-        List<Malzeme> geciciTeklifMalzemeleri = new List<Malzeme>();
+        List<Malzeme> geciciTeklifMalzemeleri = [];
 
         // Sisteme kaydedilen tüm teklifleri tutacak ana listemiz
-        List<Teklif> teklifListesi = new List<Teklif>();
+        readonly List<Teklif> teklifListesi = [];
 
         // Verileri kaydedeceğimiz txt dosyasının adı
-        string dosyaYolu = "malzemeler.txt";
+        readonly string dosyaYolu = "malzemeler.txt";
 
         // Teklifleri kaydedeceğimiz ikinci txt dosyasının adı
-        string teklifDosyaYolu = "teklifler.txt";
+        readonly string teklifDosyaYolu = "teklifler.txt";
 
         public Form1()
         {
@@ -50,7 +45,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             // GİZLEME KODU: Sütun otomatik oluştuktan hemen sonra görünmez yapıyoruz
             if (dgvMalzemeler.Columns["KullanilanAdet"] != null)
             {
-                dgvMalzemeler.Columns["KullanilanAdet"].Visible = false;
+                dgvMalzemeler.Columns["KullanilanAdet"]!.Visible = false;
             }
         }
 
@@ -83,55 +78,61 @@ namespace OOP_2._Dönem_Proje_Ödevi
 
         private void MalzemeleriDosyayaYaz()
         {
-            // Kaydedilecek satırları tutacağımız geçici liste
-            List<string> kaydedilecekSatirlar = new List<string>();
-
-            // Döngü ile listedeki her eleman metin satırına çevriliyor
-            foreach (Malzeme eleman in malzemeListesi)
+            try
             {
-                string satir = eleman.MalzemeAdi + "|" + eleman.MalzemeCinsi + "|" + eleman.Birimi + "|" + eleman.Fiyati + "|" + eleman.StokAdedi + "|" + eleman.TeminEdilenFirma;
-                kaydedilecekSatirlar.Add(satir);
+                List<string> kaydedilecekSatirlar = [];
+                foreach (Malzeme eleman in malzemeListesi)
+                {
+                    string satir = eleman.MalzemeAdi + "|" + eleman.MalzemeCinsi + "|" + eleman.Birimi + "|" + eleman.Fiyati + "|" + eleman.StokAdedi + "|" + eleman.TeminEdilenFirma;
+                    kaydedilecekSatirlar.Add(satir);
+                }
+                File.WriteAllLines(dosyaYolu, kaydedilecekSatirlar);
             }
-
-            // Oluşturulan satırlar tek seferde dosyaya yazılıyor
-            File.WriteAllLines(dosyaYolu, kaydedilecekSatirlar);
+            catch (Exception ex)
+            {
+                // Program çökmek yerine hocaya şu havalı mesajı gösterecek:
+                MessageBox.Show("Dosyaya kayıt yapılamadı! Dosya başka bir programda açık veya 'Salt Okunur' olabilir.\nHata Detayı: " + ex.Message, "Güvenlik Uyarısı", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void DosyadanMalzemeleriOku()
         {
-            // Dosyanın var olup olmadığı kontrol ediliyor
             if (File.Exists(dosyaYolu))
             {
-                // Dosyadaki tüm satırlar okunuyor
-                string[] okunanSatirlar = File.ReadAllLines(dosyaYolu);
-
-                // Her bir satır tekrar nesneye dönüştürülüyor
-                foreach (string satir in okunanSatirlar)
+                try
                 {
-                    string[] parcalar = satir.Split('|');
-
-                    // Satırda eksik bilgi olup olmadığı kontrol ediliyor
-                    if (parcalar.Length == 6)
+                    string[] okunanSatirlar = File.ReadAllLines(dosyaYolu);
+                    foreach (string satir in okunanSatirlar)
                     {
-                        Malzeme okunan = new Malzeme();
-                        okunan.MalzemeAdi = parcalar[0];
-                        okunan.MalzemeCinsi = parcalar[1];
-                        okunan.Birimi = parcalar[2];
-                        okunan.Fiyati = Convert.ToDouble(parcalar[3]);
-                        okunan.StokAdedi = Convert.ToInt32(parcalar[4]);
-                        okunan.TeminEdilenFirma = parcalar[5];
+                        string[] parcalar = satir.Split('|');
+                        if (parcalar.Length == 6)
+                        {
+                            Malzeme okunan = new()
+                            {
+                                MalzemeAdi = parcalar[0],
+                                MalzemeCinsi = parcalar[1],
+                                Birimi = parcalar[2],
+                                Fiyati = Convert.ToDouble(parcalar[3]),
+                                StokAdedi = Convert.ToInt32(parcalar[4]),
+                                TeminEdilenFirma = parcalar[5]
+                            };
 
-                        malzemeListesi.Add(okunan);
+                            malzemeListesi.Add(okunan);
+                        }
                     }
-
-
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Malzemeler dosyasında okunmayan hatalı bir satır var. Lütfen txt dosyasını kontrol ediniz.", "Dosya Okuma Hatası", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
 
         private void TeklifleriDosyayaYaz()
         {
-            List<string> kaydedilecekSatirlar = new List<string>();
+            try
+            {
+                List<string> kaydedilecekSatirlar = [];
 
             foreach (Teklif teklif in teklifListesi)
             {
@@ -152,47 +153,63 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
 
             File.WriteAllLines(teklifDosyaYolu, kaydedilecekSatirlar);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Teklifler dosyasına kayıt yapılamadı! Dosya başka bir programda açık olabilir.\nHata Detayı: " + ex.Message, "Kayıt Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void DosyadanTeklifleriOku()
         {
             if (File.Exists(teklifDosyaYolu))
             {
-                string[] satirlar = File.ReadAllLines(teklifDosyaYolu);
-
-                foreach (string satir in satirlar)
+                try
                 {
-                    string[] parcalar = satir.Split('|');
+                    string[] satirlar = File.ReadAllLines(teklifDosyaYolu);
 
-                    if (parcalar.Length >= 4)
+                    foreach (string satir in satirlar)
                     {
-                        Teklif okunanTeklif = new Teklif();
-                        okunanTeklif.TeklifNo = parcalar[0];
-                        okunanTeklif.FirmaAdi = parcalar[1];
-                        okunanTeklif.ProjeAdi = parcalar[2];
+                        string[] parcalar = satir.Split('|');
 
-                        string[] malzemeler = parcalar[3].Split('~');
-                        foreach (string m in malzemeler)
+                        if (parcalar.Length >= 4)
                         {
-                            string[] mDetay = m.Split('=');
-
-                            if (mDetay.Length == 7)
+                            Teklif okunanTeklif = new()
                             {
-                                Malzeme okunanMalzeme = new Malzeme();
-                                okunanMalzeme.MalzemeAdi = mDetay[0];
-                                okunanMalzeme.MalzemeCinsi = mDetay[1];
-                                okunanMalzeme.Birimi = mDetay[2];
-                                okunanMalzeme.Fiyati = Convert.ToDouble(mDetay[3]);
-                                okunanMalzeme.TeminEdilenFirma = mDetay[4];
-                                okunanMalzeme.StokAdedi = Convert.ToInt32(mDetay[5]);
-                                okunanMalzeme.KullanilanAdet = Convert.ToInt32(mDetay[6]);
+                                TeklifNo = parcalar[0],
+                                FirmaAdi = parcalar[1],
+                                ProjeAdi = parcalar[2]
+                            };
 
-                                okunanTeklif.KullanilanMalzemeler.Add(okunanMalzeme);
+                            string[] malzemeler = parcalar[3].Split('~');
+                            foreach (string m in malzemeler)
+                            {
+                                string[] mDetay = m.Split('=');
+
+                                if (mDetay.Length == 7)
+                                {
+                                    Malzeme okunanMalzeme = new()
+                                    {
+                                        MalzemeAdi = mDetay[0],
+                                        MalzemeCinsi = mDetay[1],
+                                        Birimi = mDetay[2],
+                                        Fiyati = Convert.ToDouble(mDetay[3]),
+                                        TeminEdilenFirma = mDetay[4],
+                                        StokAdedi = Convert.ToInt32(mDetay[5]),
+                                        KullanilanAdet = Convert.ToInt32(mDetay[6])
+                                    };
+
+                                    okunanTeklif.KullanilanMalzemeler.Add(okunanMalzeme);
+                                }
                             }
-                        }
 
-                        teklifListesi.Add(okunanTeklif);
+                            teklifListesi.Add(okunanTeklif);
+                        }
                     }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Teklifler dosyasında okunmayan hatalı bir satır var. Lütfen txt dosyasını kontrol ediniz.", "Dosya Okuma Hatası", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -220,18 +237,28 @@ namespace OOP_2._Dönem_Proje_Ödevi
             // Hata çıkarma potansiyeli olan sayısal çeviri işlemleri try-catch bloğuna alınıyor
             try
             {
-                Malzeme yeniMalzeme = new Malzeme();
-                yeniMalzeme.MalzemeAdi = txtMalzemeAdi.Text;
-                yeniMalzeme.MalzemeCinsi = txtMalzemeCinsi.Text;
+                Malzeme yeniMalzeme = new()
+                {
+                    MalzemeAdi = txtMalzemeAdi.Text,
+                    MalzemeCinsi = txtMalzemeCinsi.Text
+                };
+                // TextBox'tan gelen metnin içindeki tehlikeli karakterler anında silinir
+                yeniMalzeme.MalzemeAdi = txtMalzemeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
+                yeniMalzeme.MalzemeCinsi = txtMalzemeCinsi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
                 yeniMalzeme.Birimi = txtMalzemeBirimi.Text;
 
                 // Eğer kullanıcı buraya harf girerse, program çökmek yerine anında 'catch' bloğuna atlayacak
-                yeniMalzeme.Fiyati = Convert.ToDouble(txtMalzemeFiyati.Text);
+                // Kullanıcı virgül de girse, nokta da girse hepsini evrensel standart olan noktaya çeviriyoruz
+                string duzeltilmisFiyat = txtMalzemeFiyati.Text.Replace(",", ".");
+
+                // System.Globalization.CultureInfo.InvariantCulture kodu ile bilgisayarın dili ne olursa olsun küsuratın doğru hesaplanmasını garantiliyoruz
+                yeniMalzeme.Fiyati = Convert.ToDouble(duzeltilmisFiyat, System.Globalization.CultureInfo.InvariantCulture);
                 yeniMalzeme.StokAdedi = Convert.ToInt32(txtMalzemeStogu.Text);
 
                 yeniMalzeme.TeminEdilenFirma = txtMalzemeFirmasi.Text;
 
                 malzemeListesi.Add(yeniMalzeme);
+                MalzemeleriDosyayaYaz();
                 MalzemeleriListele();
                 MetinKutulariniTemizle();
                 ComboboxaMalzemeleriDoldur();
@@ -251,7 +278,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             if (dgvMalzemeler.CurrentRow != null)
             {
                 // Seçili satırdaki veri arka planda bir Malzeme nesnesine dönüştürülüp değişkene atanıyor
-                Malzeme SecilenMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem;
+                Malzeme SecilenMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem!;
 
                 // Seçilen malzeme arka plandaki ana depomuzdan (listeden) siliniyor
                 malzemeListesi.Remove(SecilenMalzeme);
@@ -272,13 +299,15 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void dgvMalzemeler_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvMalzemeler_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Kullanıcı başlık satırına (indeks -1) tıklarsa hiçbir şey yapma, metottan çık
+            if (e.RowIndex == -1) return;
             // Tabloda boş bir yere değil, gerçekten dolu bir satıra tıklandığı kontrol ediliyor
             if (dgvMalzemeler.CurrentRow != null)
             {
                 // Seçili satırdaki veri arka planda bir Malzeme nesnesine dönüştürülüyor
-                Malzeme SecilenMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem;
+                Malzeme SecilenMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem!;
 
                 // Nesnenin özellikleri metin kutularına aktarılıyor
                 txtMalzemeAdi.Text = SecilenMalzeme.MalzemeAdi;
@@ -303,14 +332,21 @@ namespace OOP_2._Dönem_Proje_Ödevi
                 // Kullanıcının harf girme ihtimaline karşı try-catch
                 try
                 {
-                    Malzeme guncellenecekMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem;
+                    Malzeme guncellenecekMalzeme = (Malzeme)dgvMalzemeler.CurrentRow.DataBoundItem!;
 
                     guncellenecekMalzeme.MalzemeAdi = txtMalzemeAdi.Text;
                     guncellenecekMalzeme.MalzemeCinsi = txtMalzemeCinsi.Text;
+                    // TextBox'tan gelen metnin içindeki tehlikeli karakterler anında silinir
+                    guncellenecekMalzeme.MalzemeAdi = txtMalzemeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
+                    guncellenecekMalzeme.MalzemeCinsi = txtMalzemeCinsi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
                     guncellenecekMalzeme.Birimi = txtMalzemeBirimi.Text;
 
                     // Riskli çevirme işlemleri
-                    guncellenecekMalzeme.Fiyati = Convert.ToDouble(txtMalzemeFiyati.Text);
+                    // Kullanıcı virgül de girse, nokta da girse hepsini evrensel standart olan noktaya çeviriyoruz
+                    string duzeltilmisFiyat = txtMalzemeFiyati.Text.Replace(",", ".");
+
+                    // System.Globalization.CultureInfo.InvariantCulture kodu ile bilgisayarın dili ne olursa olsun küsuratın doğru hesaplanmasını garantiliyoruz
+                    guncellenecekMalzeme.Fiyati = Convert.ToDouble(duzeltilmisFiyat, System.Globalization.CultureInfo.InvariantCulture);
                     guncellenecekMalzeme.StokAdedi = Convert.ToInt32(txtMalzemeStogu.Text);
 
                     guncellenecekMalzeme.TeminEdilenFirma = txtMalzemeFirmasi.Text;
@@ -354,13 +390,13 @@ namespace OOP_2._Dönem_Proje_Ödevi
             else
             {
                 // Sadece aranan şarta uyanları tutmak için geçici bir liste oluşturuyoruz
-                List<Malzeme> filtrelenmisListe = new List<Malzeme>();
+                List<Malzeme> filtrelenmisListe = [];
 
                 // Döngü ile listedeki her bir malzeme tek tek kontrol ediliyor
                 foreach (Malzeme eleman in malzemeListesi)
                 {
                     // Eğer malzemenin adı veya cinsi, aranan kelimeyi içeriyorsa geçici listeye ekle
-                    if (eleman.MalzemeAdi.ToLower().Contains(arananKelime) || eleman.MalzemeCinsi.ToLower().Contains(arananKelime))
+                    if (eleman.MalzemeAdi!.Contains(arananKelime, StringComparison.CurrentCultureIgnoreCase) || eleman.MalzemeCinsi!.Contains(arananKelime, StringComparison.CurrentCultureIgnoreCase))
                     {
                         filtrelenmisListe.Add(eleman);
                     }
@@ -381,7 +417,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             TeklifleriListele();
         }
 
-        private void btnTeklifeMalzemeEkle_Click(object sender, EventArgs e)
+        private void BtnTeklifeMalzemeEkle_Click(object sender, EventArgs e)
         {
             if (cmbMalzemeler.SelectedIndex != -1)
             {
@@ -396,16 +432,28 @@ namespace OOP_2._Dönem_Proje_Ödevi
                     int secilenIndeks = cmbMalzemeler.SelectedIndex;
                     Malzeme anaMalzeme = malzemeListesi[secilenIndeks];
 
-                    Malzeme teklifeEklenecek = new Malzeme();
-                    teklifeEklenecek.MalzemeAdi = anaMalzeme.MalzemeAdi;
-                    teklifeEklenecek.MalzemeCinsi = anaMalzeme.MalzemeCinsi;
-                    teklifeEklenecek.Birimi = anaMalzeme.Birimi;
-                    teklifeEklenecek.Fiyati = anaMalzeme.Fiyati;
-                    teklifeEklenecek.TeminEdilenFirma = anaMalzeme.TeminEdilenFirma;
-                    teklifeEklenecek.StokAdedi = anaMalzeme.StokAdedi;
+                    // Kullanıcının girdiği adet değeri sayıya çevriliyor
+                    int girilenAdet = Convert.ToInt32(txtKullanilanAdet.Text);
 
-                    // Kullanıcının girdiği adet değeri sayıya çevrilmeyi deneniyor
-                    teklifeEklenecek.KullanilanAdet = Convert.ToInt32(txtKullanilanAdet.Text);
+                    // NEGATİF VE SIFIR KONTROLÜ
+                    if (girilenAdet <= 0)
+                    {
+                        MessageBox.Show("Lütfen kullanılacak adet için 0'dan büyük geçerli bir sayı giriniz!", "Geçersiz Adet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Eğer sayı 0 veya negatifse işlemi burada durdur ve aşağıya geçme
+                    }
+
+                    Malzeme teklifeEklenecek = new()
+                    {
+                        MalzemeAdi = anaMalzeme.MalzemeAdi,
+                        MalzemeCinsi = anaMalzeme.MalzemeCinsi,
+                        Birimi = anaMalzeme.Birimi,
+                        Fiyati = anaMalzeme.Fiyati,
+                        TeminEdilenFirma = anaMalzeme.TeminEdilenFirma,
+                        StokAdedi = anaMalzeme.StokAdedi,
+
+                        // Kontrolden başarıyla geçen sayı malzemeye atanıyor
+                        KullanilanAdet = girilenAdet
+                    };
 
                     geciciTeklifMalzemeleri.Add(teklifeEklenecek);
                     GeciciMalzemeleriListele();
@@ -423,7 +471,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnTeklifEkle_Click(object sender, EventArgs e)
+        private void BtnTeklifEkle_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTeklifNo.Text) || string.IsNullOrWhiteSpace(txtFirmaAdi.Text) || string.IsNullOrWhiteSpace(txtProjeAdi.Text))
             {
@@ -440,10 +488,15 @@ namespace OOP_2._Dönem_Proje_Ödevi
             // Dosyanın okuma/yazma sırasında kilitlenmesi ihtimaline karşı try-catch
             try
             {
-                Teklif yeniTeklif = new Teklif();
-                yeniTeklif.TeklifNo = txtTeklifNo.Text;
-                yeniTeklif.FirmaAdi = txtFirmaAdi.Text;
-                yeniTeklif.ProjeAdi = txtProjeAdi.Text;
+                Teklif yeniTeklif = new()
+                {
+                    TeklifNo = txtTeklifNo.Text,
+                    FirmaAdi = txtFirmaAdi.Text,
+                    ProjeAdi = txtProjeAdi.Text
+                };
+                // TextBox'tan gelen metnin içindeki tehlikeli karakterler anında silinir
+                yeniTeklif.FirmaAdi = txtFirmaAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
+                yeniTeklif.ProjeAdi = txtProjeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
                 yeniTeklif.KullanilanMalzemeler = System.Linq.Enumerable.ToList(geciciTeklifMalzemeleri);
 
                 teklifListesi.Add(yeniTeklif);
@@ -468,11 +521,11 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void dgvTeklifler_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvTeklifler_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvTeklifler.CurrentRow != null)
             {
-                Teklif secilenTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem;
+                Teklif secilenTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem!;
 
                 txtTeklifNo.Text = secilenTeklif.TeklifNo;
                 txtFirmaAdi.Text = secilenTeklif.FirmaAdi;
@@ -487,7 +540,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnTeklifSil_Click(object sender, EventArgs e)
+        private void BtnTeklifSil_Click(object sender, EventArgs e)
         {
             // Tablodan silmek için bir teklifin seçilip seçilmediği kontrol ediliyor
             if (dgvTeklifler.CurrentRow != null)
@@ -499,7 +552,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
                 if (cevap == DialogResult.Yes)
                 {
                     // Seçilen satırdaki teklif nesnesi alınıyor
-                    Teklif secilenTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem;
+                    Teklif secilenTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem!;
 
                     // Teklif, ana listeden siliniyor
                     teklifListesi.Remove(secilenTeklif);
@@ -530,7 +583,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnTeklifGuncelle_Click(object sender, EventArgs e)
+        private void BtnTeklifGuncelle_Click(object sender, EventArgs e)
         {
             if (dgvTeklifler.CurrentRow != null)
             {
@@ -542,11 +595,13 @@ namespace OOP_2._Dönem_Proje_Ödevi
 
                 try
                 {
-                    Teklif guncellenecekTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem;
+                    Teklif guncellenecekTeklif = (Teklif)dgvTeklifler.CurrentRow.DataBoundItem!;
 
                     guncellenecekTeklif.TeklifNo = txtTeklifNo.Text;
                     guncellenecekTeklif.FirmaAdi = txtFirmaAdi.Text;
                     guncellenecekTeklif.ProjeAdi = txtProjeAdi.Text;
+                    guncellenecekTeklif.FirmaAdi = txtFirmaAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
+                    guncellenecekTeklif.ProjeAdi = txtProjeAdi.Text.Replace("|", "").Replace("=", "").Replace("~", "");
                     guncellenecekTeklif.KullanilanMalzemeler = System.Linq.Enumerable.ToList(geciciTeklifMalzemeleri);
 
                     // Hata çıkarma ihtimali olan dosya kayıt işlemi
@@ -572,13 +627,13 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnTekliftenMalzemeSil_Click(object sender, EventArgs e)
+        private void BtnTekliftenMalzemeSil_Click(object sender, EventArgs e)
         {
             // Sol alttaki küçük tablodan silmek için bir malzemenin seçili olup olmadığı kontrol ediliyor
             if (dgvTekliftekiMalzemeler.CurrentRow != null)
             {
                 // Seçili satırdaki malzeme nesnesi arka plandan çekiliyor
-                Malzeme secilenMalzeme = (Malzeme)dgvTekliftekiMalzemeler.CurrentRow.DataBoundItem;
+                Malzeme secilenMalzeme = (Malzeme)dgvTekliftekiMalzemeler.CurrentRow.DataBoundItem!;
 
                 // Seçilen malzeme o anki teklifin geçici listesinden çıkartılıyor
                 geciciTeklifMalzemeleri.Remove(secilenMalzeme);
@@ -594,7 +649,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnFiyatHesapla_Click(object sender, EventArgs e)
+        private void BtnFiyatHesapla_Click(object sender, EventArgs e)
         {
             // Ekranda (geçici listede) hesaplanacak malzeme olup olmadığı kontrol ediliyor
             if (geciciTeklifMalzemeleri.Count > 0)
@@ -619,7 +674,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             }
         }
 
-        private void btnRaporla_Click(object sender, EventArgs e)
+        private void BtnRaporla_Click(object sender, EventArgs e)
         {
             // Sistemdeki toplam malzeme ve teklif sayıları alınıyor
             int toplamMalzemeCesidi = malzemeListesi.Count;
@@ -651,7 +706,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
             MessageBox.Show(raporMetni, "Rapor Ekranı", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void btnTeklifAra_Click(object sender, EventArgs e)
+        private void BtnTeklifAra_Click(object sender, EventArgs e)
         {
             // Arama kutusuna girilen metin alınıyor ve küçük harfe çevriliyor
             string arananKelime = txtTeklifAra.Text.ToLower();
@@ -665,15 +720,15 @@ namespace OOP_2._Dönem_Proje_Ödevi
             else
             {
                 // Sadece aranan şarta uyan teklifleri tutmak için geçici bir liste oluşturuyoruz
-                List<Teklif> filtrelenmisTeklifler = new List<Teklif>();
+                List<Teklif> filtrelenmisTeklifler = [];
 
                 // Döngü ile sistemdeki her bir teklif tek tek kontrol ediliyor
                 foreach (Teklif t in teklifListesi)
                 {
                     // Eğer teklifin numarası, firma adı veya proje adı aranan kelimeyi içeriyorsa geçici listeye ekle
-                    if (t.TeklifNo.ToLower().Contains(arananKelime) ||
-                        t.FirmaAdi.ToLower().Contains(arananKelime) ||
-                        t.ProjeAdi.ToLower().Contains(arananKelime))
+                    if (t.TeklifNo!.Contains(arananKelime, StringComparison.CurrentCultureIgnoreCase) ||
+                        t.FirmaAdi!.Contains(arananKelime, StringComparison.CurrentCultureIgnoreCase) ||
+                        t.ProjeAdi!.Contains(arananKelime, StringComparison.CurrentCultureIgnoreCase))
                     {
                         filtrelenmisTeklifler.Add(t);
                     }

@@ -3,15 +3,13 @@
 **				BİLGİSAYAR VE BİLİŞİM BİLİMLERİ FAKÜLTESİ
 **				    BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
 **				   NESNEYE DAYALI PROGRAMLAMA DERSİ
-**					2014-2015 BAHAR DÖNEMİ
+**					2026-2027 BAHAR DÖNEMİ
 **
 **				ÖDEV NUMARASI..........: Proje Ödevi
 **				ÖĞRENCİ ADI............: Ahmed Selim Yılmaz
 **				ÖĞRENCİ NUMARASI.......: B251210005
 **              DERSİN ALINDIĞI GRUP...: B Grubu
 ****************************************************************************/
-
-using System;
 
 namespace OOP_2._Dönem_Proje_Ödevi
 {

@@ -3,17 +3,13 @@
 **				BİLGİSAYAR VE BİLİŞİM BİLİMLERİ FAKÜLTESİ
 **				    BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
 **				   NESNEYE DAYALI PROGRAMLAMA DERSİ
-**					2014-2015 BAHAR DÖNEMİ
+**					2026-2027 BAHAR DÖNEMİ
 **
 **				ÖDEV NUMARASI..........: Proje Ödevi
 **				ÖĞRENCİ ADI............: Ahmed Selim Yılmaz
 **				ÖĞRENCİ NUMARASI.......: B251210005
 **              DERSİN ALINDIĞI GRUP...: B Grubu
 ****************************************************************************/
-
-using OOP_2._Dönem_Proje_Ödevi;
-using System;
-using System.Collections.Generic;
 
 namespace OOP_2._Dönem_Proje_Ödevi
 {
@@ -30,7 +26,7 @@ namespace OOP_2._Dönem_Proje_Ödevi
         // Sınıf ilk oluştuğunda listenin de hata vermeden hazır olması için yapıcı metot (constructor) ekliyoruz.
         public Teklif()
         {
-            KullanilanMalzemeler = new List<Malzeme>();
+            KullanilanMalzemeler = [];
         }
     }
 }
