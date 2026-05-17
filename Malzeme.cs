@@ -3,7 +3,7 @@
 **				BİLGİSAYAR VE BİLİŞİM BİLİMLERİ FAKÜLTESİ
 **				    BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
 **				   NESNEYE DAYALI PROGRAMLAMA DERSİ
-**					2026-2027 BAHAR DÖNEMİ
+**					2025-2026 BAHAR DÖNEMİ
 **
 **				ÖDEV NUMARASI..........: Proje Ödevi
 **				ÖĞRENCİ ADI............: Ahmed Selim Yılmaz
